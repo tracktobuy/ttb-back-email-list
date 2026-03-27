@@ -211,16 +211,26 @@
         const popup = document.getElementById('success-pop');
         const emailInput = document.getElementById('emailInput');
 
-        form.addEventListener('submit', (e) => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault(); 
-            
-            popup.classList.add('show');
-            
-            emailInput.value = '';
+            const email = emailInput.value;
 
-            setTimeout(() => {
-                popup.classList.remove('show');
-            }, 4000);
+            try {
+                const response = await fetch('localhost:8080/notify',{
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({email: email})
+                
+            });
+
+            if (response.ok){
+                popup.classList.add('show');
+                emailInput.value = '';
+                setTimeout(() => popup.classList.remove('show', 4000));
+            }
+            } catch(error){
+                alert("This is embarassing, for me and database >.<' ")
+            }
         });
     </script>
 </body>
