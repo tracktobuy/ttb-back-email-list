@@ -35,7 +35,7 @@ func handler(ctx context.Context, event json.RawMessage) (string, error) {
 	if err := json.Unmarshal([]byte(body.Body), &data); err != nil {
 		return "", fmt.Errorf("DEU ERRO NO BODY: %v", err)
 	}
-	return "Hello World email ttb " + data.Email, nil
+	return "", nil
 }
 
 func main() {
