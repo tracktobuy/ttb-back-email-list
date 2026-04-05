@@ -66,6 +66,15 @@ func (r *Routes) handleGetSubscribers() (events.APIGatewayV2HTTPResponse, error)
 		log.Printf("Error getting subscribers: %v", err)
 		return response(http.StatusInternalServerError, "Failed to get subscribers")
 	}
+
+	if subscribers == nil {
+		subscribers = []model.MailSubscriber{}
+	}
+
+	if len(subscribers) == 0 {
+		subscribers = []model.MailSubscriber{}
+	}
+
 	return response(http.StatusOK, subscribers)
 }
 
