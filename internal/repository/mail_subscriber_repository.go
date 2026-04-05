@@ -46,3 +46,28 @@ func (r *MailSubscriberRepository) AddSubscriber(email string) error {
 
 	return nil
 }
+
+
+func (r *MailSubscriberRepository) GetSubscribers() ([]model.MailSubscriber, error) {
+	var subscribers []model.MailSubscriber
+
+	output, err := r.client.Scan(r.ctx, &dynamodb.ScanInput{
+		TableName: aws.String(r.tableName),
+	})
+
+	if err != nil {
+		return nil, fmt.Errorf("scanning table: %w", err)
+	}
+
+	for _, item := range output.Items {
+		var subscriber model.MailSubscriber
+		err := attributevalue.UnmarshalMap(item, &subscriber)
+		if err != nil {
+			return nil, fmt.Errorf("unmarshaling subscriber: %w", err)
+		}
+		subscribers = append(subscribers, subscriber)
+	}
+
+
+	return subscribers, nil
+}

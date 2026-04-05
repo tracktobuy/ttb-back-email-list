@@ -31,7 +31,8 @@ func (r *Routes) Route(ctx context.Context, req events.APIGatewayV2HTTPRequest) 
 	switch method {
 	case http.MethodPost:
 		return r.handleAddSubscriber(ctx, req)
-
+	case http.MethodGet:
+		return r.handleGetSubscribers()
 	default:
 		return response(http.StatusNotFound, "Resource not found")
 	}
@@ -55,6 +56,17 @@ func (r *Routes) handleAddSubscriber(ctx context.Context, req events.APIGatewayV
 	}
 
 	return response(http.StatusOK, nil)
+}
+
+func (r *Routes) handleGetSubscribers() (events.APIGatewayV2HTTPResponse, error) {
+
+	var subscribers []model.MailSubscriber
+	subscribers, err := r.repo.GetSubscribers()
+	if err != nil {
+		log.Printf("Error getting subscribers: %v", err)
+		return response(http.StatusInternalServerError, "Failed to get subscribers")
+	}
+	return response(http.StatusOK, subscribers)
 }
 
 func response(statusCode int, body any) (events.APIGatewayV2HTTPResponse, error) {
